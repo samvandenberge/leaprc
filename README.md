@@ -13,6 +13,6 @@ var five = require("johnny-five"),
 board.on("ready", function() {
 
 	// Create a Led op pin 13 and strobe it
-        (new five.Led(13)).strobe();
+	(new five.Led(13)).strobe();
 });
 ```
