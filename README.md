@@ -6,11 +6,11 @@ Prerequisite: [Johnny-Five](https://github.com/rwaldron/johnny-five/wiki/Getting
 
 Create a script with the following code, and run it using `node`:
 
-```
-var Five = require("johnny-five"),
+```js
+var Five = require('johnny-five'),
         board = new Five.Board();
 
-board.on("ready", function() {
+board.on('ready', function() {
 
 	// Create a Led op pin 13 and strobe it
 	(new Five.Led(13)).strobe();
@@ -22,7 +22,7 @@ Prerequisite: [Leap JS](https://github.com/leapmotion/leapjs)
 
 Create a script with the following code, and run it using `node`:
 
-```
+```js
 var Leap = require('leapjs'),
         controller = new Leap.Controller();
         
