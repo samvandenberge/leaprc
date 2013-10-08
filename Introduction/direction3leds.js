@@ -21,13 +21,13 @@ board.on('ready', function () {
 		}
 
 		// right
-		if (direction > 0.05) {
+		if (direction > 0.2) {
 			middleLed.off();
 			leftLed.off();
 			rightLed.on();
 
 			// left
-		} else if (direction < -0.05) {
+		} else if (direction < 0) {
 			middleLed.off();
 			leftLed.on();
 			rightLed.off();
