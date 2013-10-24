@@ -6,57 +6,82 @@
  * @author Sam Van Den Berge, Pieter Van Molle and Yannick Stevens
  */
 
-/**
- * Creates a websocket that'll be used to read the Leap Motion data
- */
-var webSocket = require('ws'),
-    ws = new webSocket('ws://127.0.0.1:6437');
+// Require the leapjs library
+var Leap = require('leapjs');
+
+// Controller object, used to provide data to interpret
+var controller = new Leap.Controller();
 
 /**
- * Each time the websocket provides data, this function will parse it to a JSON format.
- * This way the data is ready to be used.
+ * Basic checks, to see whether the Leap Motion controller is connected.
+ */
+controller.on('connect', function() {
+  console.log("Successfully connected.");
+});
+
+controller.on('deviceConnected', function() {
+  console.log("A Leap device has been connected.");
+});
+
+controller.on('deviceDisconnected', function() {
+  console.log("A Leap device has been disconnected.");
+});
+
+/**
+ * Each time the controller creates a frame, this function will check the hand data needed for the controls.
  * The steering controlls are based on the Altitude, Direction and PalmPosition properties of the Hand object.
- * Direction: The way the hand is pointing, seen from the center of the palm to the tip of the middle finger.
- * Position: Position of the palm in a 3D-grid (X-axis: horizontal, Y-Axis: vertical, Z-axis: diagonal)
- * Altitude: the space between the palm and the Leap Motion
+ * PalmNormal: A vector pointing perpendicular to the palm of the hand.
+ * PalmPosition: Position of the palm in a 3D-grid (X-axis: horizontal, Y-Axis: vertical, Z-axis: diagonal)
  */
-ws.on('message', function(data, flags) {
-        frame = JSON.parse(data);
-        // Execute code when there is at least 1 hand registered
-	    if (frame.hands && frame.hands.length > 0) {
+controller.on('frame', function(frame) {
 
-	    	// Only use the first registered hand
-	        hand = frame.hands[0];
-	        
-	        // Debug data
-        	console.log('Direction: ' + vectorToString(hand.direction, 2) + '\n');
-        	console.log('Position: ' + vectorToString(hand.palmPosition) + '\n');
+  // Execute code when there is at least 1 hand registered
+    if (frame.hands && frame.hands.length > 0) {
 
-        	// Right and left controls
-        	// Direction[0]: X-axis
-        	if (hand.direction[0] >= 0.2) {
-        		console.log('you\'re steering to the right!');
-        	} else if (hand.direction[0] < 0.2 && hand.direction[0] > -0.2) {
-        		console.log('you\'re keeping it steady.');
-        	} else {
-        		console.log('you\'re turning left.');
-        	}
+        // Save the previous and current frame for altitude calculations
+        var previousFrame = controller.frame(1);
+        var currentFrame = controller.frame(0);
 
-        	// Forward and backward controls
-        	// PalmPosition[2]: Z-axis
-			if(hand.palmPosition[2] <= -20) {
-				console.log('Thrusting forward.');
-			} else if (hand.palmPosition[2] >= 20) {
-				console.log('Going back!');
-			} else {
-				console.log('Not going anywhere...');
-			}
+        // Only use the first registered hand
+        hand = frame.hands[0];
 
-			// Altitude printing
-        	console.log('Altitude: ' + hand.palmPosition[1]);
+        // Debug data
+        console.log('PalmNormal: ' + vectorToString(hand.palmNormal, 2) + '\n');
+        console.log('PalmPosition: ' + vectorToString(hand.palmPosition) + '\n');
 
-	    }
-    });
+        // Right and left controls
+        // PalmNormal[0]: X-axis
+        // PalmNormal[2]: Z-axis
+        if (hand.palmNormal[0] >= 0.2) {
+            console.log('you\'re steering to the right!');
+        } else if (hand.palmNormal[0] < 0.2 && hand.palmNormal[0] > -0.2) {
+            console.log('you\'re keeping it steady.');
+        } else {
+            console.log('you\'re turning left.');
+        }
+
+        if(hand.palmNormal[2] >= 0.2) {
+            console.log('Thrusting forward.');
+        } else if (hand.palmNormal[2] <= -0.2) {
+            console.log('Going back!');
+        } else {
+            console.log('Not going anywhere...');
+        }
+
+        // Altitude calculations
+        // When the current frame's altitude is higher, the hand is higher
+        console.log('Altitude: ' + hand.palmPosition[1]);           
+        if (previousFrame.hands[0]) {
+
+            if(previousFrame.hands[0].palmPosition[1] < currentFrame.hands[0].palmPosition[1]) {
+                console.log("Going up!");
+            }
+
+            if (previousFrame.hands[0].palmPosition[1] > currentFrame.hands[0].palmPosition[1]) {
+                console.log("Going down!");
+            }   
+        }
+});
 
 /**
  * Makes the data from several properties readable
