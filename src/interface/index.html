@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>LeapRC</title>
+    <link rel="stylesheet" href="css/library.css"/>
+    <link rel="stylesheet" href="css/main.css"/>
+</head>
+<body>
+<h1>LeapRC</h1>
+
+<!-- content -->
+<div id="content">
+    <!-- controls -->
+    <div class="controlField clearfix">
+        <div class="controlElement">
+            <p id="lblThrottle"></p>
+            <input type="range" id="sldThrottle" min="0" max="127" step="1" value="0"/>
+            <p>Throttle</p>
+        </div>
+        <div class="controlElement">
+            <p id="lblPitch"></p>
+            <input type="range" id="sldPitch" min="0" max="126" step="1" value="63"/>
+            <p>Pitch</p>
+        </div>
+        <div class="controlElement">
+            <p id="lblYaw"></p>
+            <input type="range" id="sldYaw" min="0" max="126" step="1" value="63"/>
+            <p>Yaw</p>
+        </div>
+        <div class="controlElement">
+            <p id="lblTrim"></p>
+            <input type="range" id="sldTrim" min="0" max="126" step="1" value="63"/>
+            <p>Trim</p>
+        </div>
+    </div>
+    <!-- configuration -->
+    <div id="configuration">
+        <p id="lblSerialPort"></p>
+
+        <label for="fldCustomSerialPort"></label>
+        <input type="text" name="customSerialPort" id="fldCustomSerialPort">
+        <input type="button" id="btnChangePort" value="Change serial port">
+        <p id="connectedPort"></p>
+    </div>
+</div>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="scripts/serialport.js"></script>
+</body>
+</html>
+
+
