@@ -23,17 +23,21 @@ $(document).keydown(function(e) {
     } else if(e.which == 83) { // throttle down - s
         $sldThrottle.val(Number($sldThrottle.val()) - 1);
     }else if(e.which == 37) { // yaw left
-        sldYaw.val(Number(sldYaw.val()) + 1);
-    }else if(e.which == 39) { // yaw right
         sldYaw.val(Number(sldYaw.val()) - 1);
+        e.preventDefault();
+    }else if(e.which == 39) { // yaw right
+        sldYaw.val(Number(sldYaw.val()) + 1);
+        e.preventDefault();
     }else if(e.which == 38) { // pitch up
         sldPitch.val(Number(sldPitch.val()) + 1);
+        e.preventDefault();
     }else if(e.which == 40) { // pitch down
         sldPitch.val(Number(sldPitch.val()) - 1);
+        e.preventDefault();
     } else if(e.which == 81) { // trim left
-        sldTrim.val(Number(sldTrim.val()) + 1);
-    }else if(e.which == 68) { // trim right
         sldTrim.val(Number(sldTrim.val()) - 1);
+    }else if(e.which == 68) { // trim right
+        sldTrim.val(Number(sldTrim.val()) + 1);
     }
 });
 
