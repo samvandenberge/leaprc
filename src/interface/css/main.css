@@ -95,7 +95,12 @@ h1 {
     width: 75px;
 }
 
-#btnChangePort, #fldCustomSerialPort {
+#btnChangePort, #fldCustomSerialPort, #btnExitApp {
     padding: 3px;
     margin-bottom: 10px;
+}
+
+#btnExitApp {
+    margin-left: 10px;
+    width: 50px;
 }
