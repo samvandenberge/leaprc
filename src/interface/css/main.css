@@ -1,0 +1,106 @@
+/* basic reset */
+* {
+    margin: 0;
+    padding: 0;
+}
+
+/**
+* ------------------------------------------------------------------------------------------------------
+* Main
+* ------------------------------------------------------------------------------------------------------
+*/
+
+@font-face{
+    font-family: Ubuntu;
+    src: url('../fonts/Ubuntu-L.ttf')  format('truetype');
+}
+
+body {
+    font-family: "Ubuntu";
+    line-height: 1.2;
+    font-size: 12px;
+}
+
+#content {
+    width: 700px;
+    height: 450px;
+    margin: 0 auto;
+}
+
+h1 {
+    font-size: 58px;
+    text-align: center;
+    margin-bottom: 60px;
+    padding: 20px 0;
+    background: #EEEEEE;
+    font-weight: 100;
+}
+
+/**
+* ------------------------------------------------------------------------------------------------------
+* Controls
+* ------------------------------------------------------------------------------------------------------
+*/
+
+.controlField {
+    height: 185px;
+    width: 630px;
+    margin: 0 auto;
+    margin-bottom: 50px;
+    text-align: center;
+}
+
+.controlElement {
+    display: inline-block;
+    float: left;
+    text-align: center;
+    width: 130px;
+    margin-bottom: 20px;
+}
+
+#sldTrim, #sldYaw {
+    display: inline-block;
+    height: 156px;
+    width: 130px;
+    margin-bottom: 15px;
+}
+
+.controlElement:nth-child(3) {
+    width: 155px;
+}
+
+#sldYaw {
+    margin-right: 25px;
+}
+
+#sldThrottle, #sldPitch {
+    -webkit-appearance: slider-vertical;
+    height: 156px;
+    width: 130px;
+    margin-bottom: 15px;
+}
+
+/**
+* ------------------------------------------------------------------------------------------------------
+* Configuration
+* ------------------------------------------------------------------------------------------------------
+*/
+
+#configuration {
+    clear: both;
+    text-align: center;
+}
+
+#configuration input[type=text] {
+    width: 75px;
+}
+
+#btnChangePort, #fldCustomSerialPort, #btnExitApp {
+    padding: 3px;
+    margin-bottom: 10px;
+}
+
+#btnExitApp {
+    margin-left: 10px;
+    width: 50px;
+}
