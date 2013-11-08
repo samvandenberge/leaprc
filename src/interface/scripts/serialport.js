@@ -14,13 +14,13 @@ var throttle = yaw = pitch = trim = 0;
 
 var connectArduino = function () {
     arduinoSerial = new SerialPort(arduinoPort);
-
+    $('#connectedPort').html('Not connected!'); // set the port name label
     /**
      * Wait for connection
      */
     arduinoSerial.on('open', function () {
         console.log('Serial port open');
-        $('#connectedPort').html('Connected to: ' + arduinoPort.path); // set the port name label
+        $('#connectedPort').html('Connected to: ' + arduinoPort); // set the port name label
 
         /**
          * The Arduino will send data when it's ready to receive the control bits
@@ -83,7 +83,7 @@ win.on('close', function () {
             arduinoSerial.close();
         } catch (err) {
         } finally {
-            this.close(true);
+            gui.App.quit();
         }
 
     }, 2000);
