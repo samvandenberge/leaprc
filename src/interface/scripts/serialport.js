@@ -1,73 +1,73 @@
-/**
- * Constants
- */
-
 var application_stopped = false;
 
 /**
  * Setup the serial port
  */
 var SerialPort = require('serialport').SerialPort;
-var port = new SerialPort('COM4');
-
+var arduinoPort = 'COM3';
+var arduinoSerial;
 var controller = new Leap.Controller({enableGestures: true});
 
-/**
- * Get the current window
- */
 var gui = global.window.nwDispatcher.requireNwGui();
-var win = gui.Window.get();
+var win = gui.Window.get(); // Get the current window
+var throttle = yaw = pitch = trim = 0;
 
-var throttle = yaw = pitch = 0;
+var connectArduino = function () {
+    arduinoSerial = new SerialPort(arduinoPort);
 
-// connect the Leap Motion
-controller.connect();
+    /**
+     * Wait for connection
+     */
+    arduinoSerial.on('open', function () {
+        console.log('Serial port open');
+        $('#connectedPort').html('Connected to: ' + arduinoPort.path); // set the port name label
+
+        /**
+         * The Arduino will send data when it's ready to receive the control bits
+         */
+        arduinoSerial.on('data', function (data) {
+            // send data
+            if (application_stopped) {
+                arduinoSerial.write(String.fromCharCode(63));   // yaw
+                arduinoSerial.write(String.fromCharCode(63));   // pitch
+                arduinoSerial.write(String.fromCharCode(0));  // throttle
+                arduinoSerial.write(String.fromCharCode(63));   // trim
+            } else {
+                arduinoSerial.write(String.fromCharCode(yaw));   // yaw
+                arduinoSerial.write(String.fromCharCode(pitch));   // pitch
+                arduinoSerial.write(String.fromCharCode(throttle));  // throttle
+                arduinoSerial.write(String.fromCharCode(trim));   // trim
+            }
+
+            // set labels
+            $('#lblThrottle').html(Math.round(throttle / 1.27) + '%');
+            $('#lblPitch').html(pitch);
+            $('#lblYaw').html(yaw);
+            $('#lblTrim').html(trim);
+        });
+    });
+
+    /**
+     * The serial connection is closed
+     */
+    arduinoSerial.on('close', function () {
+        if (!application_stopped) {
+            reconnectArduino();
+        }
+    });
+}
+
+// check for connection errors or drops and reconnect
+var reconnectArduino = function () {
+    console.log('reconnecting');
+    connectArduino();
+};
 
 /**
  * Stop the helicopter and close the window
  */
 $('#btnExitApp').on('click', function (e) {
     window.close();
-});
-
-/**
- * Wait for connection
- */
-port.on('open', function () {
-    console.log('Serial port open');
-    // set the port name label
-    $('#connectedPort').html('Connected to: ' + port.path);
-
-    /**
-     * The Sketch will send data when it's ready to receive the control bits
-     */
-    port.on('data', function (data) {
-        // send data
-        if (application_stopped) {
-            port.write(String.fromCharCode(63));   // yaw
-            port.write(String.fromCharCode(63));   // pitch
-            port.write(String.fromCharCode(0));  // throttle
-            port.write(String.fromCharCode(63));   // trim
-        } else {
-            port.write(String.fromCharCode(yaw));   // yaw
-            port.write(String.fromCharCode(pitch));   // pitch
-            port.write(String.fromCharCode(throttle));  // throttle
-            port.write(String.fromCharCode(trim));   // trim
-        }
-
-        // set labels
-        $('#lblThrottle').html(Math.round(throttle / 1.27) + '%');
-        $('#lblPitch').html(pitch);
-        $('#lblYaw').html(yaw);
-        $('#lblTrim').html(trim);
-    });
-});
-
-/**
- * The serial connection is closed
- */
-port.on('close', function () {
-    console.log('Serial port closed');
 });
 
 /**
@@ -79,12 +79,19 @@ win.on('close', function () {
 
     // the timeout is needed to execute all commands
     setTimeout(function () {
-        port.close();
-        port = null;
-        SerialPort = null;
-        this.close(true);
+        try {
+            arduinoSerial.close();
+        } catch (err) {
+        } finally {
+            this.close(true);
+        }
+
     }, 2000);
 });
+
+win.on('closed', function () {
+    win = null;
+})
 
 /**
  * Data recieved from the Leap Motion
@@ -129,11 +136,6 @@ controller.on('frame', function (frame) {
 
 /**
  * @see http://stackoverflow.com/questions/15254280/linearly-scaling-a-number-in-a-certain-range-to-a-new-range
- * @param oldMin
- * @param oldMax
- * @param newMin
- * @param newMax
- * @param oldValue
  * @returns {value between a specific range}
  */
 function linearScaling(oldMin, oldMax, newMin, newMax, oldValue) {
@@ -147,3 +149,18 @@ function linearScaling(oldMin, oldMax, newMin, newMax, oldValue) {
     }
     return newValue;
 }
+
+$('#btnChangePort').on('click', function (e) {
+    // close the current serial connection and open a new one
+    arduinoPort = $('#fldCustomSerialPort').val() !== '' ? $('#fldCustomSerialPort').val() : 'COM3';;
+    // @TODO check if port is really closed
+    try {
+        arduinoSerial.close();
+    } catch (err) {
+    }
+    reconnectArduino();
+});
+
+// connect the Leap Motion & Arduino
+connectArduino();
+controller.connect();
