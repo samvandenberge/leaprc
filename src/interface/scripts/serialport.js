@@ -2,69 +2,32 @@
  * Constants
  */
 
-var APPLICATION_STOPPED = false
+var application_stopped = false;
 
 /**
  * Setup the serial port
  */
+var SerialPort = require('serialport').SerialPort;
+var port = new SerialPort('COM4');
 
-SerialPort = require('serialport').SerialPort,
-    port = new SerialPort('COM3'),
+var controller = new Leap.Controller({enableGestures: true});
 
 /**
  * Get the current window
  */
-    gui = global.window.nwDispatcher.requireNwGui(),
-    win = gui.Window.get();
+var gui = global.window.nwDispatcher.requireNwGui();
+var win = gui.Window.get();
 
-/**
- * Listeners
- */
-$('#btnChangePort').on('click', function (e) {
-    // @TODO close the current serial connection and open a new one
-    /*var customPort = $('#fldCustomSerialPort').val() !== '' ? $('#fldCustomSerialPort').val() : 'COM3';
-     port.close();
-     port = new SerialPort(customPort);
-     console.log('port' + customPort);*/
-});
+var throttle = yaw = pitch = 0;
+
+// connect the Leap Motion
+controller.connect();
 
 /**
  * Stop the helicopter and close the window
  */
 $('#btnExitApp').on('click', function (e) {
     window.close();
-});
-
-/**
- * Keyboard navigation
- */
-$(document).keydown(function (e) {
-    $sldThrottle = $('#sldThrottle');
-    sldYaw = $('#sldYaw');
-    sldPitch = $('#sldPitch');
-    sldTrim = $('#sldTrim');
-
-    if (e.which == 90) { // throttle up - z
-        $sldThrottle.val(Number($sldThrottle.val()) + 1); // convert to number to fix a bug!
-    } else if (e.which == 83) { // throttle down - s
-        $sldThrottle.val(Number($sldThrottle.val()) - 1);
-    } else if (e.which == 37) { // yaw left
-        sldYaw.val(Number(sldYaw.val()) - 1);
-        e.preventDefault();
-    } else if (e.which == 39) { // yaw right
-        sldYaw.val(Number(sldYaw.val()) + 1);
-        e.preventDefault();
-    } else if (e.which == 38) { // pitch up
-        sldPitch.val(Number(sldPitch.val()) + 1);
-        e.preventDefault();
-    } else if (e.which == 40) { // pitch down
-        sldPitch.val(Number(sldPitch.val()) - 1);
-        e.preventDefault();
-    } else if (e.which == 81) { // trim left
-        sldTrim.val(Number(sldTrim.val()) - 1);
-    } else if (e.which == 68) { // trim right
-        sldTrim.val(Number(sldTrim.val()) + 1);
-    }
 });
 
 /**
@@ -79,17 +42,12 @@ port.on('open', function () {
      * The Sketch will send data when it's ready to receive the control bits
      */
     port.on('data', function (data) {
-        var throttle = $('#sldThrottle').val();
-        var pitch = 126 - $('#sldPitch').val(); // reverse the slider value
-        var yaw = 126 - $('#sldYaw').val(); // reverse the slider value
-        var trim = 126 - $('#sldTrim').val(); // reverse the slider value
-
         // send data
-        if (APPLICATION_STOPPED) {
+        if (application_stopped) {
             port.write(String.fromCharCode(63));   // yaw
             port.write(String.fromCharCode(63));   // pitch
             port.write(String.fromCharCode(0));  // throttle
-            port.write(String.fromCharCode(63));   // trim*/
+            port.write(String.fromCharCode(63));   // trim
         } else {
             port.write(String.fromCharCode(yaw));   // yaw
             port.write(String.fromCharCode(pitch));   // pitch
@@ -98,7 +56,7 @@ port.on('open', function () {
         }
 
         // set labels
-        $('#lblThrottle').html(Math.round(throttle / 1.27).toFixed(0) + '%');
+        $('#lblThrottle').html(Math.round(throttle / 1.27) + '%');
         $('#lblPitch').html(pitch);
         $('#lblYaw').html(yaw);
         $('#lblTrim').html(trim);
@@ -112,20 +70,80 @@ port.on('close', function () {
     console.log('Serial port closed');
 });
 
-
 /**
  * Listen to main window's close event
  */
 win.on('close', function () {
     this.hide(); // Pretend to be closed already
-    APPLICATION_STOPPED = true;
+    application_stopped = true;
 
     // the timeout is needed to execute all commands
     setTimeout(function () {
-        //where we can also call foo
         port.close();
         port = null;
         SerialPort = null;
         this.close(true);
     }, 2000);
 });
+
+/**
+ * Data recieved from the Leap Motion
+ */
+controller.on('frame', function (frame) {
+
+    // Execute code when there is at least 1 hand registered
+    if (frame.hands && frame.hands.length > 0) {
+        var hand = frame.hands[0];
+
+        // Throttle control
+        var height = hand.palmPosition[1];
+        if (height < 126) {
+            throttle = 0;
+        } else if (height > 370) {
+            throttle = 127;
+        } else {
+            throttle = linearScaling(126, 370, 0, 128, height);
+        }
+        // limit slider updates
+        if (Math.abs($('#sldThrottle').val() - throttle) > 10) {
+            $('#sldThrottle').val(throttle);
+        }
+
+        // Yaw control
+        var x = hand.palmNormal[0];
+        yaw = 126 - linearScaling(-1, 1, 0, 126, x);
+        // limit slider updates
+        if (Math.abs($('#sldYaw').val() - yaw) > 5) {
+            $('#sldYaw').val(yaw);
+        }
+
+        // Pitch control
+        var z = hand.palmNormal[2];
+        pitch = 126 - linearScaling(-1, 1, 0, 126, z);
+        // limit slider updates
+        if (Math.abs($('#sldPitch').val() - pitch) > 5) {
+            $('#sldPitch').val(pitch);
+        }
+    }
+});
+
+/**
+ * @see http://stackoverflow.com/questions/15254280/linearly-scaling-a-number-in-a-certain-range-to-a-new-range
+ * @param oldMin
+ * @param oldMax
+ * @param newMin
+ * @param newMax
+ * @param oldValue
+ * @returns {value between a specific range}
+ */
+function linearScaling(oldMin, oldMax, newMin, newMax, oldValue) {
+    var newValue;
+    if (oldMin !== oldMax && newMin !== newMax) {
+        newValue = parseFloat((((oldValue - oldMin) * (newMax - newMin)) / (oldMax - oldMin)) + newMin);
+        newValue = newValue.toFixed(0);
+    }
+    else {
+        newValue = error;
+    }
+    return newValue;
+}
