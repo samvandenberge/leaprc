@@ -4,7 +4,7 @@ var application_stopped = false;
  * Setup the serial port
  */
 var SerialPort = require('serialport').SerialPort;
-var arduinoPort = 'COM3';
+var arduinoPort = 'COM4';
 var arduinoSerial;
 var controller = new Leap.Controller({enableGestures: true});
 
@@ -89,6 +89,14 @@ win.on('close', function () {
     }, 2000);
 });
 
+win.on('blur', function () {
+    console.log('lost focus');
+});
+
+win.on('focus', function () {
+    console.log('focus');
+});
+
 win.on('closed', function () {
     win = null;
 })
@@ -97,40 +105,35 @@ win.on('closed', function () {
  * Data recieved from the Leap Motion
  */
 controller.on('frame', function (frame) {
-
     // Execute code when there is at least 1 hand registered
     if (frame.hands && frame.hands.length > 0) {
         var hand = frame.hands[0];
 
-        // Throttle control
-        var height = hand.palmPosition[1];
-        if (height < 126) {
-            throttle = 0;
-        } else if (height > 370) {
-            throttle = 127;
-        } else {
-            throttle = linearScaling(126, 370, 0, 128, height);
-        }
-        // limit slider updates
-        if (Math.abs($('#sldThrottle').val() - throttle) > 10) {
-            $('#sldThrottle').val(throttle);
-        }
-
         // Yaw control
-        var x = hand.palmNormal[0];
-        yaw = 126 - linearScaling(-1, 1, 0, 126, x);
-        // limit slider updates
-        if (Math.abs($('#sldYaw').val() - yaw) > 5) {
-            $('#sldYaw').val(yaw);
+        if (x < 0.15 && x > -0.15) {
+            x = 0;
+            var x = hand.palmNormal[0];
         }
+        yaw = 126 - linearScaling(-1, 1, 0, 126, x);
+        $('#sldYaw').val(yaw);
 
         // Pitch control
         var z = hand.palmNormal[2];
         pitch = 126 - linearScaling(-1, 1, 0, 126, z);
         // limit slider updates
-        if (Math.abs($('#sldPitch').val() - pitch) > 5) {
-            $('#sldPitch').val(pitch);
+        $('#sldPitch').val(pitch);
+
+        // Throttle control
+        var height = hand.palmPosition[1];
+        if (height < 126) {
+            throttle = 0;
+            yaw = pitch = trim = 63;
+        } else if (height > 370) {
+            throttle = 127;
+        } else {
+            throttle = linearScaling(126, 370, 0, 128, height);
         }
+        $('#sldThrottle').val(throttle);
     }
 });
 
@@ -152,7 +155,8 @@ function linearScaling(oldMin, oldMax, newMin, newMax, oldValue) {
 
 $('#btnChangePort').on('click', function (e) {
     // close the current serial connection and open a new one
-    arduinoPort = $('#fldCustomSerialPort').val() !== '' ? $('#fldCustomSerialPort').val() : 'COM3';;
+    arduinoPort = $('#fldCustomSerialPort').val() !== '' ? $('#fldCustomSerialPort').val() : 'COM4';
+    ;
     // @TODO check if port is really closed
     try {
         arduinoSerial.close();
