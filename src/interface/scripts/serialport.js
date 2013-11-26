@@ -108,7 +108,6 @@ win.on('closed', function () {
  */
 controller.on('frame', function (frame) {
 
-
     // Execute code when there is at least 1 hand registered
     if (frame.hands && frame.hands.length > 0 && frame.fingers.length > 1) {
 
@@ -156,9 +155,14 @@ controller.on('frame', function (frame) {
     // detect fist
     //console.log('hand = ' + typeof hands)
     if (typeof frame.hands == 'undefined' || frame.fingers.length <= 1) {
-        if (stop - 0.3 >= 0) {
-            stop -= 0.3;
+        if (stop > 65) {
+            stop = 65;
         }
+        stop -= (stop / 250);
+        if (stop <= 15) {
+            stop = 0;
+        }
+
         throttle = stop;
         yaw = pitch = 63;
         $('#sldThrottle').val(throttle);
