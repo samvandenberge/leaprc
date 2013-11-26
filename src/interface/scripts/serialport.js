@@ -11,7 +11,7 @@ var controller = new Leap.Controller({enableGestures: true});
 var gui = global.window.nwDispatcher.requireNwGui();
 var win = gui.Window.get(); // Get the current window
 var throttle = yaw = pitch = trim = 0;
-var stop = 55;
+var stop = 0;
 
 var connectArduino = function () {
     arduinoSerial = new SerialPort(arduinoPort);
@@ -34,7 +34,6 @@ var connectArduino = function () {
                 arduinoSerial.write(String.fromCharCode(0));  // throttle
                 arduinoSerial.write(String.fromCharCode(63));   // trim
             } else {
-                console.log(yaw);
                 trim = $('#sldTrim').val();
                 arduinoSerial.write(String.fromCharCode(yaw));   // yaw
                 arduinoSerial.write(String.fromCharCode(pitch));   // pitch
@@ -111,7 +110,7 @@ controller.on('frame', function (frame) {
 
 
     // Execute code when there is at least 1 hand registered
-    if (frame.hands && frame.hands.length > 0 && frame.fingers.length > 0) {
+    if (frame.hands && frame.hands.length > 0 && frame.fingers.length > 1) {
 
         $('#debug1').val('busy');
         var hand = frame.hands[0];
@@ -126,8 +125,7 @@ controller.on('frame', function (frame) {
             x = 0.9;
         }
 
-        yaw = 127 - linearScaling(-0.9, 0.9, 0, 127, x);
-
+        yaw = linearScaling(-0.9, 0.9, 0, 127, x);
         $('#sldYaw').val(yaw);
 
         // Pitch control
@@ -156,9 +154,8 @@ controller.on('frame', function (frame) {
     }
 
     // detect fist
-    var numberOfFingers = frame.fingers.length;
-    if (frame.hands.length > 0 && numberOfFingers == 0) {
-        $('#debug1').val('stop val = ' + stop);
+    //console.log('hand = ' + typeof hands)
+    if (typeof frame.hands == 'undefined' || frame.fingers.length <= 1) {
         if (stop - 0.3 >= 0) {
             stop -= 0.3;
         }
