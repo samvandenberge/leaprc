@@ -33,6 +33,8 @@ var connectArduino = function () {
                 arduinoSerial.write(String.fromCharCode(0));  // throttle
                 arduinoSerial.write(String.fromCharCode(63));   // trim
             } else {
+                console.log(yaw);
+                trim = $('#sldTrim').val();
                 arduinoSerial.write(String.fromCharCode(yaw));   // yaw
                 arduinoSerial.write(String.fromCharCode(pitch));   // pitch
                 arduinoSerial.write(String.fromCharCode(throttle));  // throttle
@@ -109,29 +111,40 @@ controller.on('frame', function (frame) {
     if (frame.hands && frame.hands.length > 0) {
         var hand = frame.hands[0];
 
+         var x = hand.palmNormal[0];
         // Yaw control
         if (x < 0.15 && x > -0.15) {
             x = 0;
-            var x = hand.palmNormal[0];
+        } else if(x <= -0.9) {
+            x = -0.9;
+        } else if(x >= 0.9) {
+            x = 0.9;
         }
-        yaw = 126 - linearScaling(-1, 1, 0, 126, x);
+
+        yaw = 127 - linearScaling(-0.9, 0.9, 0, 127, x);
+
         $('#sldYaw').val(yaw);
 
         // Pitch control
         var z = hand.palmNormal[2];
-        pitch = 126 - linearScaling(-1, 1, 0, 126, z);
+        if(z <= -0.9) {
+            z = -0.9;
+        } else if(z >= 0.9) {
+            z = 0.9;
+        }
+        pitch = 127 - linearScaling(-0.9, 0.9, 0, 127, z);
         // limit slider updates
         $('#sldPitch').val(pitch);
 
         // Throttle control
         var height = hand.palmPosition[1];
-        if (height < 126) {
+        if (height < 90) {
             throttle = 0;
             yaw = pitch = trim = 63;
-        } else if (height > 370) {
+        } else if (height > 340) {
             throttle = 127;
         } else {
-            throttle = linearScaling(126, 370, 0, 128, height);
+            throttle = linearScaling(90, 340, 0, 127, height);
         }
         $('#sldThrottle').val(throttle);
     }
@@ -156,7 +169,6 @@ function linearScaling(oldMin, oldMax, newMin, newMax, oldValue) {
 $('#btnChangePort').on('click', function (e) {
     // close the current serial connection and open a new one
     arduinoPort = $('#fldCustomSerialPort').val() !== '' ? $('#fldCustomSerialPort').val() : 'COM4';
-    ;
     // @TODO check if port is really closed
     try {
         arduinoSerial.close();
