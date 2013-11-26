@@ -11,6 +11,7 @@ var controller = new Leap.Controller({enableGestures: true});
 var gui = global.window.nwDispatcher.requireNwGui();
 var win = gui.Window.get(); // Get the current window
 var throttle = yaw = pitch = trim = 0;
+var stop = 55;
 
 var connectArduino = function () {
     arduinoSerial = new SerialPort(arduinoPort);
@@ -107,17 +108,21 @@ win.on('closed', function () {
  * Data recieved from the Leap Motion
  */
 controller.on('frame', function (frame) {
+
+
     // Execute code when there is at least 1 hand registered
-    if (frame.hands && frame.hands.length > 0) {
+    if (frame.hands && frame.hands.length > 0 && frame.fingers.length > 0) {
+
+        $('#debug1').val('busy');
         var hand = frame.hands[0];
 
-         var x = hand.palmNormal[0];
+        var x = hand.palmNormal[0];
         // Yaw control
         if (x < 0.15 && x > -0.15) {
             x = 0;
-        } else if(x <= -0.9) {
+        } else if (x <= -0.9) {
             x = -0.9;
-        } else if(x >= 0.9) {
+        } else if (x >= 0.9) {
             x = 0.9;
         }
 
@@ -127,9 +132,9 @@ controller.on('frame', function (frame) {
 
         // Pitch control
         var z = hand.palmNormal[2];
-        if(z <= -0.9) {
+        if (z <= -0.9) {
             z = -0.9;
-        } else if(z >= 0.9) {
+        } else if (z >= 0.9) {
             z = 0.9;
         }
         pitch = 127 - linearScaling(-0.9, 0.9, 0, 127, z);
@@ -146,8 +151,24 @@ controller.on('frame', function (frame) {
         } else {
             throttle = linearScaling(90, 340, 0, 127, height);
         }
+        stop = throttle;
         $('#sldThrottle').val(throttle);
     }
+
+    // detect fist
+    var numberOfFingers = frame.fingers.length;
+    if (frame.hands.length > 0 && numberOfFingers == 0) {
+        $('#debug1').val('stop val = ' + stop);
+        if (stop - 0.3 >= 0) {
+            stop -= 0.3;
+        }
+        throttle = stop;
+        yaw = pitch = 63;
+        $('#sldThrottle').val(throttle);
+        $('#sldPitch').val(pitch);
+        $('#sldYaw').val(yaw);
+    }
+
 });
 
 /**
