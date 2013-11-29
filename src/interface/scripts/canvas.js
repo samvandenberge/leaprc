@@ -65,8 +65,8 @@ function CanvasState (canvas) {
 		this.styleBorderLeft  = parseInt(document.defaultView.getComputedStyle(canvas, null)['borderLeftWidth'], 10)  || 0;
 		this.styleBorderTop   = parseInt(document.defaultView.getComputedStyle(canvas, null)['borderTopWidth'], 10)   || 0;
 	}
-	var html = document.body.parentNode;
-	this.htmlTop = html.offsetTop;
+	var html      = document.body.parentNode;
+	this.htmlTop  = html.offsetTop;
 	this.htmlLeft = html.offsetLeft;
 	
 	this.slider    = new Slider();
@@ -74,8 +74,10 @@ function CanvasState (canvas) {
 
 	this.valid     = false;
 
+	var state = this;
+
 	this.interval = 30;
-	setInterval(function() { this.draw(); }, this.interval);
+	setInterval(function() { state.draw(); }, state.interval);
 };
 
 CanvasState.prototype.setSlider = function(slider) {
