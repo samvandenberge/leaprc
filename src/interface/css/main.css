@@ -25,6 +25,7 @@ body {
     width: 700px;
     height: 450px;
     margin: 0 auto;
+    text-align: center;
 }
 
 h1 {
@@ -42,42 +43,8 @@ h1 {
 * ------------------------------------------------------------------------------------------------------
 */
 
-.controlField {
-    height: 185px;
-    width: 630px;
+canvas {
     margin: 0 auto;
-    margin-bottom: 50px;
-    text-align: center;
-}
-
-.controlElement {
-    display: inline-block;
-    float: left;
-    text-align: center;
-    width: 130px;
-    margin-bottom: 20px;
-}
-
-#sldTrim, #sldYaw {
-    display: inline-block;
-    height: 156px;
-    width: 130px;
-    margin-bottom: 15px;
-}
-
-.controlElement:nth-child(3) {
-    width: 155px;
-}
-
-#sldYaw {
-    margin-right: 25px;
-}
-
-#sldThrottle, #sldPitch {
-    -webkit-appearance: slider-vertical;
-    height: 156px;
-    width: 130px;
-    margin-bottom: 15px;
 }
 
 /**
