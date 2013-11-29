@@ -56,7 +56,7 @@ Joystick.prototype.draw = function(ctx) {
 	ctx.fill();
 
 	startX = this.x - this.radius + 2 * this.radius * this.yaw;
-	startY = this.y + this.radius - 2 * this.radius * this.pitch; 
+	startY = this.y + this.radius - 2 * this.radius * (1 - this.pitch);
 
 	ctx.beginPath();
 	ctx.fillStyle = '#f06060';
