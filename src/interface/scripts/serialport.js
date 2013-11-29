@@ -13,6 +13,8 @@ var win = gui.Window.get(); // Get the current window
 var throttle = yaw = pitch = trim = 0;
 var stop = 0;
 
+var state = new CanvasState(document.getElementById('canvas'));
+
 var connectArduino = function () {
     arduinoSerial = new SerialPort(arduinoPort);
     $('#connectedPort').html('Not connected!'); // set the port name label
@@ -41,11 +43,9 @@ var connectArduino = function () {
                 arduinoSerial.write(String.fromCharCode(trim));   // trim
             }
 
-            // set labels
-            $('#lblThrottle').html(Math.round(throttle / 1.27) + '%');
-            $('#lblPitch').html(pitch);
-            $('#lblYaw').html(yaw);
-            $('#lblTrim').html(trim);
+            state.setThrottle(throttle / 127);
+            state.setYaw(yaw / 127);
+            state.setPitch(pitch / 127);
         });
     });
 
@@ -124,8 +124,7 @@ controller.on('frame', function (frame) {
             x = 0.9;
         }
 
-        yaw = linearScaling(-0.9, 0.9, 0, 127, x);
-        $('#sldYaw').val(yaw);
+        yaw = 127 - linearScaling(-0.9, 0.9, 0, 127, x);
 
         // Pitch control
         var z = hand.palmNormal[2];
@@ -135,8 +134,6 @@ controller.on('frame', function (frame) {
             z = 0.9;
         }
         pitch = 127 - linearScaling(-0.9, 0.9, 0, 127, z);
-        // limit slider updates
-        $('#sldPitch').val(pitch);
 
         // Throttle control
         var height = hand.palmPosition[1];
@@ -149,7 +146,10 @@ controller.on('frame', function (frame) {
             throttle = linearScaling(90, 340, 0, 127, height);
         }
         stop = throttle;
-        $('#sldThrottle').val(throttle);
+
+        state.setThrottle(throttle / 127);
+        state.setYaw(yaw / 127);
+        state.setPitch(pitch / 127);  
     }
 
     // detect fist
@@ -165,9 +165,11 @@ controller.on('frame', function (frame) {
 
         throttle = stop;
         yaw = pitch = 63;
-        $('#sldThrottle').val(throttle);
-        $('#sldPitch').val(pitch);
-        $('#sldYaw').val(yaw);
+        
+
+        state.setThrottle(throttle / 127);
+        state.setYaw(yaw / 127);
+        state.setPitch(pitch / 127);
     }
 
 });
