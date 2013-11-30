@@ -124,7 +124,7 @@ controller.on('frame', function (frame) {
             x = 0.9;
         }
 
-        yaw = 127 - linearScaling(-0.9, 0.9, 0, 127, x);
+        yaw = linearScaling(-0.9, 0.9, 0, 127, x);
 
         // Pitch control
         var z = hand.palmNormal[2];
