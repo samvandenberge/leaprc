@@ -42,7 +42,7 @@ Joystick.prototype.draw = function(ctx) {
 	ctx.closePath();
 	ctx.fill();
 
-	startX = this.x - this.radius + 2 * this.radius * this.yaw;
+	startX = this.x - this.radius + 2 * this.radius * (1 - this.yaw);
 	startY = this.y + this.radius - 2 * this.radius * (1 - this.pitch);
 
 	ctx.beginPath();
