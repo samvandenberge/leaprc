@@ -1,2 +1,2 @@
-src/interface/node_modules/*
-src/interface/.idea/*
+node_modules/
+.idea/
