@@ -1,1 +1,0 @@
-var videoCamera = new tracking.VideoCamera().render(document.getElementById('camera'));

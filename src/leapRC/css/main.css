@@ -44,7 +44,6 @@ h1 {
 
 canvas {
     margin: 0 auto;
-    float: left;
 }
 
 /**
@@ -70,8 +69,4 @@ canvas {
 #btnExitApp {
     margin-left: 10px;
     width: 50px;
-}
-
-#camera {
-    float: right;
 }
