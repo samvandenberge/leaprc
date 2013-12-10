@@ -1,5 +1,14 @@
 # Leap RC
 
+Control an RC helicopter using the Leap Motion!
+
+## What do you need
+
+- Arduino UNO
+- Leap Motion Controller
+- Syma S107G Helicopter
+- (Webcam)
+
 ## Connect Arduino UNO to Node.js
 
 Prerequisite: [Serialport](https://github.com/voodootikigod/node-serialport)
