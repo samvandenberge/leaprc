@@ -40,14 +40,14 @@ var stop    = 0,
 /**
  * Canvas configuration
  */
- 
+
 var state = new CanvasState(document.getElementById('canvas'));
 
 /**
  * Arduino setup
  * 
- * The connection to the arduino UNO is made using the serial port.
- * On the arduino resides a c sketch that sends the control commands to the rc helicopter.
+ * The connection to the Arduino UNO is made using the serial port.
+ * On the Arduino resides a c sketch that sends the control commands to the rc helicopter.
  * This sketch also sends a 'ready' bit to the serial port when it's ready to receive new commands.
  */
 
@@ -254,5 +254,5 @@ win.on('closed', function () {
  * Connect the Arduino UNO and the Leap Motion controller
  */
 
- connectArduino();
+connectArduino();
 controller.connect();
