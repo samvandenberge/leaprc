@@ -1,2 +1,6 @@
 node_modules/
 .idea/
+
+# Mac
+.DS_Store
+.DS_Store?
