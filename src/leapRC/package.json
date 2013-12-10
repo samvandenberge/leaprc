@@ -1,6 +1,7 @@
 {
-    "name": "nw-demo",
+    "name": "LeapRC",
     "main": "index.html",
+    "single-instance": false,
     "window": {
         "title": "Javascript interface",
         "icon": "link.png",
