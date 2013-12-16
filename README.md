@@ -5,9 +5,15 @@ Control an RC helicopter using the Leap Motion!
 ## What do you need
 
 - Arduino UNO
+- An infrared LED
+- A transistor (we used a B337 NPN transistor)
 - Leap Motion Controller
 - Syma S107G Helicopter
 - (Webcam)
+
+## Arduino schematic
+
+![Arduino schematic](https://lh4.googleusercontent.com/-sgPLD4wMx9M/Uq9j9JoPXoI/AAAAAAAASOw/sCIufU5xXn0/w1246-h560-no/schema_bb.png)
 
 ## Connect Arduino UNO to Node.js
 
