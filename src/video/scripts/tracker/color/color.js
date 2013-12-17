@@ -12,7 +12,7 @@
 
             color: 'magenta',
 
-            minFoundPixels: 30
+            minFoundPixels: 10
 
         },
 
