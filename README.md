@@ -59,7 +59,7 @@ Prerequisite: [Node Webkit](https://github.com/rogerwang/node-webkit)
 Node Webkit is an app runtime based on `Chromium` and `node.js`. It supports third party modules and is platform independent.
 Webkit is easy to use since all there's needed to be done is to compress your files into an app.nw folder and open that folder with nw.
 
-[Quick startguide](https://github.com/rogerwang/node-webkit#quick-start)
+[Installation](https://github.com/sam45/leaprc/wiki/Node-Webkit#installation)
 
 ## Websockets
 
@@ -73,7 +73,7 @@ Since Nodejs is single-threaded, Websockets provide a way to allow 2 threads to 
 
 Prerequisite: [Tracking](https://github.com/eduardolundgren/tracking.js)
 
-With tracking.js, it's possible to track a certain colour.
-When a certain color is found, tracking.js provides the colour's coordinates.
+With tracking.js, it's possible to track a certain color.
+When a certain color is found, tracking.js provides the color's coordinates.
 
 [Usage](https://github.com/sam45/leaprc/wiki/Tracking)
