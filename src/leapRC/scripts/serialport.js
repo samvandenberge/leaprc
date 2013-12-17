@@ -13,7 +13,7 @@ var gui = global.window.nwDispatcher.requireNwGui(),
  */
 
 var SerialPort  = require('serialport').SerialPort,
-    arduinoPort = 'COM3',
+    arduinoPort = 'COM4',
     arduinoSerial;
 
 /**
@@ -96,7 +96,7 @@ var connectArduino = function () {
     // try reconnecting when the serial connection closes
     arduinoSerial.on('close', function () {
         if (!application_stopped) {
-            reconnectArduino();
+			connectArduino();
         }
     });
 }
@@ -114,7 +114,7 @@ $('#btnChangePort').on('click', function (e) {
         arduinoSerial.close();
     } catch (err) {
     }
-    reconnectArduino();
+	connectArduino();
 });
 
 /**
