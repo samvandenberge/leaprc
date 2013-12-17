@@ -1,15 +1,31 @@
 {
-    "name": "nw-demo",
+    "name": "LeapRC Video Tracking",
+    "descripton": "Control an RC helicopter using the Leap Motion!",
     "main": "index.html",
+    "single-instance": false,
     "window": {
         "title": "Javascript interface",
         "icon": "link.png",
-        "toolbar": true,
+        "toolbar": false,
         "frame": true,
         "width": 900,
         "height": 600,
         "position": "center",
         "min_width": 650,
         "min_height": 400
-    }
+    },
+    "contributors":[{
+        "name": "Yannick Stevens",
+        "name": "Sam Van Den Berge",
+        "name": "Pieter Van Molle"
+    }],
+    "licenses": [{
+       "type": "MIT",
+       "url": "https://github.com/sam45/leaprc/blob/master/LICENSE"
+    }],
+   "repositories": [{
+        "type": "git", 
+        "url": "https://github.com/sam45/leaprc",
+        "path": "src"
+    }]
 }
