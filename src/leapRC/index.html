@@ -6,32 +6,41 @@
     <link rel="stylesheet" href="css/main.css"/>
 </head>
 <body>
-<h1>LeapRC</h1>
+<header>
+    <h1>LeapRC</h1>
+</header>
 
 <!-- content -->
 <div id="content">
     <!-- controls -->
     <canvas id="canvas" width="400" height="300">
     </canvas>
+</div>
 
-    <!-- configuration -->
-    <div id="configuration" class="clearfix">
-        <p id="lblSerialPort"></p>
+<!-- configuration -->
+<div id="configuration" class="clearfix">
+    <p id="lblSerialPort"></p>
 
-        <input type="text" name="customSerialPort" id="fldCustomSerialPort">
-        <input type="button" id="btnChangePort" value="Change serial port">
-        <input type="button" id="btnExitApp" value="Exit">
-
-        <p id="connectedPort"></p>
-
-        <div class="onoffswitch">
-            <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" checked>
-            Video<label class="onoffswitch-label" for="myonoffswitch">
-            <div class="onoffswitch-inner"></div>
-            <div class="onoffswitch-switch"></div>
-        </label>
-        </div>
-    </div>
+    <dl class="options">
+        <dt>
+            <label for="fldCustomSerialPort">Serial Port</label>
+        </dt>
+        <dd>
+            <input type="text" name="customSerialPort" id="fldCustomSerialPort">
+            <input type="button" id="btnChangePort" value="Change serial port">
+            <span id="connectedPort"></span>
+        </dd>
+        <dt><label for="onoffswitch">Enable Video</label></dt>
+        <dd>
+            <div class="onoffswitch">
+                <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" checked>
+                <label class="onoffswitch-label" for="myonoffswitch">
+                    <div class="onoffswitch-inner"></div>
+                    <div class="onoffswitch-switch"></div>
+                </label>
+            </div>
+        </dd>
+    </dl>
 </div>
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
