@@ -1,5 +1,6 @@
 /**
  * Window configuration
+ *
  */
 
 var gui = global.window.nwDispatcher.requireNwGui(),
@@ -8,6 +9,7 @@ var gui = global.window.nwDispatcher.requireNwGui(),
 
 /**
  * SerialPort configuration
+ *
  */
 
 var SerialPort  = require('serialport').SerialPort,
@@ -16,6 +18,7 @@ var SerialPort  = require('serialport').SerialPort,
 
 /**
  * Leap Motion controller configuration
+ *
  */
 
 var controller = new Leap.Controller({enableGestures: true});
@@ -23,6 +26,7 @@ var controller = new Leap.Controller({enableGestures: true});
 
 /**
  * Directional controls configuration
+ *
  */
 
 var throttle = 0,
@@ -32,6 +36,7 @@ var throttle = 0,
 
 /**
  * Additional controls configuration
+ *
  */
 
 var stop    = 0,
@@ -39,6 +44,7 @@ var stop    = 0,
 
 /**
  * Canvas configuration
+ *
  */
 
 var state = new CanvasState(document.getElementById('canvas'));
@@ -49,6 +55,7 @@ var state = new CanvasState(document.getElementById('canvas'));
  * The connection to the Arduino UNO is made using the serial port.
  * On the Arduino resides a c sketch that sends the control commands to the rc helicopter.
  * This sketch also sends a 'ready' bit to the serial port when it's ready to receive new commands.
+ *
  */
 
 var connectArduino = function () {
@@ -98,6 +105,7 @@ var connectArduino = function () {
  * Serial port Setup
  *
  * Close the current serial connection and open a new one on a given port.
+ *
  */
 
 $('#btnChangePort').on('click', function (e) {
@@ -115,6 +123,7 @@ $('#btnChangePort').on('click', function (e) {
  * A Leap Motion controller is used for gesture analysis.
  * Each frame, the three-dimensional position of the hand is analyzed, and updated.
  * The rc helicopter can be motion-controlled using one hand.
+ *
  */
 
 controller.on('frame', function (frame) {
@@ -191,6 +200,7 @@ controller.on('frame', function (frame) {
  * Helper method: maps a given value in a range
  * @see http://stackoverflow.com/questions/15254280/linearly-scaling-a-number-in-a-certain-range-to-a-new-range
  * @returns {Number} value in a specific range
+ *
  */
 function linearScaling(oldMin, oldMax, newMin, newMax, oldValue) {
     var newValue;
@@ -207,7 +217,8 @@ function linearScaling(oldMin, oldMax, newMin, newMax, oldValue) {
 /**
  * Websocket Setup
  *
- * Set the inRange variable when reveicing data
+ * Set the inRange variable when reveicing data.
+ *
  */
 
 var WebSocketServer = require('ws').Server
@@ -222,6 +233,7 @@ wss.on('connection', function (ws) {
  * Window Setup
  * 
  * Make sure everything's closed before terminating the app.
+ *
  */
 
 $('#btnExitApp').on('click', function (e) {
@@ -251,7 +263,8 @@ win.on('closed', function () {
 /**
  * Main
  *
- * Connect the Arduino UNO and the Leap Motion controller
+ * Connect the Arduino UNO and the Leap Motion controller.
+ *
  */
 
 connectArduino();
