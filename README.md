@@ -35,6 +35,15 @@ var connectArduino = function () {
 }
 ```
 
+## Downloads
+
+Prebuilt binaries for Windows (17 December 2013)
+
+   [LeapRC](http://www.mediafire.com/download/05yiezzotnofpb8/nw.exe)
+
+   [Video](http://www.mediafire.com/download/ys6cnd872bp29lf/video.exe)
+
+
 ## Connect Leap Motion to Node.js
 
 Prerequisite: [Leap JS](https://github.com/leapmotion/leapjs)
