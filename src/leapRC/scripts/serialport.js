@@ -40,8 +40,8 @@ var throttle = 0,
  */
 
 var stop    = 0,
-    inRange = 1;
-    camera  = true;
+    inRange = 0,
+    camera  = false;
 
 /**
  * Canvas configuration
@@ -86,11 +86,6 @@ var connectArduino = function () {
                 arduinoSerial.write(String.fromCharCode(throttle));  // throttle
                 arduinoSerial.write(String.fromCharCode(trim));   // trim
             }
-
-            // update canvas
-            state.setThrottle(throttle / 127);
-            state.setYaw(yaw / 127);
-            state.setPitch(pitch / 127);
         });
     });
 
@@ -125,7 +120,6 @@ $('#btnChangePort').on('click', function (e) {
 
 $('#myonoffswitch').on('change', function() {
    camera = $(this).is(':checked');
-   console.log(camera);
 });
 
 /**
@@ -155,7 +149,7 @@ controller.on('frame', function (frame) {
             x = 0.9;
         }
 
-        yaw = 127 - linearScaling(-0.9, 0.9, 0, 127, x);
+        yaw = linearScaling(-0.9, 0.9, 0, 127, x);
 
         // pitch control
         if (z <= -0.9) {
@@ -178,7 +172,7 @@ controller.on('frame', function (frame) {
 
         // update canvas
         state.setThrottle(throttle / 127);
-        state.setYaw(yaw / 127);
+        state.setYaw((127 - yaw) / 127);
         state.setPitch(pitch / 127);
     }
 
@@ -199,7 +193,7 @@ controller.on('frame', function (frame) {
 
         // update canvas
         state.setThrottle(throttle / 127);
-        state.setYaw(yaw / 127);
+        state.setYaw((127 - yaw) / 127);
         state.setPitch(pitch / 127);
     }
 
