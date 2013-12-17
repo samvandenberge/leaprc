@@ -198,9 +198,9 @@ var DomElement = function(opt_config) {
     var instance = this;
 
     instance.setAttrs(tracking.merge({
-        height: 240,
+        height: 400,
         visible: true,
-        width: 320
+        width: 480
     }, opt_config), true);
 };
 

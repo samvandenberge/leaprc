@@ -6,13 +6,13 @@
     "window": {
         "title": "Javascript interface",
         "icon": "link.png",
-        "toolbar": false,
+        "toolbar": true,
         "frame": true,
-        "width": 900,
-        "height": 600,
+        "width": 500,
+        "height": 495,
         "position": "center",
-        "min_width": 650,
-        "min_height": 400
+        "min_width": 500,
+        "min_height": 495
     },
     "contributors":[{
         "name": "Yannick Stevens",
