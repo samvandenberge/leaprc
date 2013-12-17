@@ -40,7 +40,8 @@ var throttle = 0,
  */
 
 var stop    = 0,
-    inRange = 0;
+    inRange = 1;
+    camera  = true;
 
 /**
  * Canvas configuration
@@ -96,7 +97,7 @@ var connectArduino = function () {
     // try reconnecting when the serial connection closes
     arduinoSerial.on('close', function () {
         if (!application_stopped) {
-			connectArduino();
+            connectArduino();
         }
     });
 }
@@ -114,7 +115,17 @@ $('#btnChangePort').on('click', function (e) {
         arduinoSerial.close();
     } catch (err) {
     }
-	connectArduino();
+    connectArduino();
+});
+
+/**
+ * Video Setup
+ *
+ */
+
+$('#myonoffswitch').on('change', function() {
+   camera = $(this).is(':checked');
+   console.log(camera);
 });
 
 /**
@@ -129,7 +140,7 @@ $('#btnChangePort').on('click', function (e) {
 controller.on('frame', function (frame) {
 
     // at least one hand is required
-    if (frame.hands && frame.hands.length > 0 && frame.fingers.length > 1 && inRange == 1) {
+    if (frame.hands && frame.hands.length > 0 && frame.fingers.length > 1 && (!camera || inRange == 1)) {
         var hand = frame.hands[0],
             x    = hand.palmNormal[0],
             y    = hand.palmPosition[1],
@@ -147,7 +158,6 @@ controller.on('frame', function (frame) {
         yaw = 127 - linearScaling(-0.9, 0.9, 0, 127, x);
 
         // pitch control
-        var z = hand.palmNormal[2];
         if (z <= -0.9) {
             z = -0.9;
         } else if (z >= 0.9) {
@@ -156,7 +166,6 @@ controller.on('frame', function (frame) {
         pitch = 127 - linearScaling(-0.9, 0.9, 0, 127, z);
 
         // throttle control
-        var y = hand.palmPosition[1];
         if (y < 90) {
             throttle = 0;
             yaw = pitch = trim = 63;
@@ -174,7 +183,7 @@ controller.on('frame', function (frame) {
     }
 
     // detect fist
-    if (typeof frame.hands == 'undefined' || frame.fingers.length <= 1 || inRange == 0) {
+    if (typeof frame.hands == 'undefined' || frame.fingers.length <= 1 || (inRange == 0 && camera)) {
         
         // exponential decrement
         if (stop > 65) {

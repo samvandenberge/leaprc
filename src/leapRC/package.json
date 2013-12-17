@@ -1,5 +1,5 @@
 {
-    "name": "LeapRC Control",
+    "name": "LeapRC",
     "descripton": "Control an RC helicopter using the Leap Motion!",
     "main": "index.html",
     "single-instance": false,
