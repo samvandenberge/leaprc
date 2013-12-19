@@ -220,7 +220,7 @@ function linearScaling(oldMin, oldMax, newMin, newMax, oldValue) {
 /**
  * Websocket Setup
  *
- * Set the inRange variable when reveicing data.
+ * Set the inRange variable when receiving data.
  *
  */
 
