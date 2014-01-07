@@ -231,15 +231,15 @@ var WebSocketServer = require('ws').Server
 wss.on('connection', function (ws) {
     ws.on('message', function (message) {
         inRange = message;
-        if (message) {
-            $detection.val('Detecting helicopter');
+        if (message  == '1') {
+            $detection.html('Detecting helicopter');
         } else {
-            $detection.val('Not detecting helicopter');
+            $detection.html('Not detecting helicopter');
         }
     });
 
     ws.on('close', function() {
-        $detection.val('Not using camera');
+        $detection.html('Not using camera');
     });
 });
 
