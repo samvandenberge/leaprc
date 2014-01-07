@@ -6,7 +6,7 @@
     "window": {
         "title": "Javascript interface",
         "icon": "link.png",
-        "toolbar": true,
+        "toolbar": false,
         "frame": true,
         "width": 480,
         "height": 400,
