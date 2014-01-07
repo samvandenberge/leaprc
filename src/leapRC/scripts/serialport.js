@@ -224,11 +224,22 @@ function linearScaling(oldMin, oldMax, newMin, newMax, oldValue) {
  *
  */
 
+ $detection = $('#detection');
+
 var WebSocketServer = require('ws').Server
     , wss = new WebSocketServer({port: 8081});
 wss.on('connection', function (ws) {
     ws.on('message', function (message) {
         inRange = message;
+        if (message) {
+            $detection.val('Detecting helicopter');
+        } else {
+            $detection.val('Not detecting helicopter');
+        }
+    });
+
+    ws.on('close', function() {
+        $detection.val('Not using camera');
     });
 });
 
